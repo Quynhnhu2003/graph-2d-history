@@ -1,0 +1,48 @@
+@use "/src/utils/shared/variables" as *;
+* {
+  text-decoration: none;
+  box-sizing: border-box;
+  outline: none;
+  margin: 0;
+  font-size: 16px;
+  font-family: 'SFPro', sans-serif;
+  appearance: none;
+  color: $text-primary;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:not(input) {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+  }
+
+  // Custom Sheet
+  &:global(
+      .zaui-sheet-content
+        .zaui-sheet-content-handler-wrapper
+        .zaui-sheet-content-handler
+    ) {
+    width: 40px !important;
+    height: 4px !important;
+    border-radius: 2px !important;
+    margin: calc(calc(32px - 4px) / 2) !important;
+    background-color: rgba(97, 97, 97, 1) !important;
+  }
+  &:global(.zaui-sheet-content .zaui-sheet-content-handler-wrapper) {
+    height: 32px !important;
+  }
+
+  &:global(.MuiSkeleton-rounded) {
+    border-radius: 0.5rem !important;
+  }
+}
+
+button:disabled {
+  transition: ease-in-out 0.3s;
+  opacity: 0.5;
+}

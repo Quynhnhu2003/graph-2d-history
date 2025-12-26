@@ -1,0 +1,30 @@
+export enum TemplateEnum {
+  ChooseContract = 'choose-contract',
+  CategoryComponent = 'category-component',
+  BillingComponent = 'billing',
+  PrepaidComponent = 'prepaid-register',
+  ReportStatus = 'report-status',
+  ReportStatusTK = 'report-status-tk',
+  Banner = 'banner',
+  BannerGuest = 'banner-guest',
+  TelecomService = 'telecommunication-services',
+  ComboService = 'combo-internet-tv',
+  RouterDevices = 'router-devices',
+  OtherServices = 'other-services',
+  ModemInfo = 'modem-info',
+  FollowOA = 'oa-fpt',
+  Recommendation = 'product-list',
+  HotDiscount = 'special-offer-v2',
+  Referral = 'referral',
+}
+
+export enum HomeRoutePaths {
+  HOME = '',
+  LIST_CONTRACT = 'list-contract',
+  SERVICE_MANAGEMENT = 'service-management',
+  HOT_DISCOUNT = 'hot-discount',
+  REFERRAL_INVITE = 'referral-invite',
+  REFERRAL_HISTORY = 'referral-history',
+  REFERRAL_POLICY = 'referral-policy',
+  REFERRAL_GIFT = 'referral-gift',
+}

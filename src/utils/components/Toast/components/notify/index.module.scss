@@ -1,0 +1,29 @@
+.toastifyContainer {
+  opacity: 0;
+  width: 100%;
+  gap: 0.75rem;
+  display: flex;
+  color: #000;
+  max-width: 25rem;
+  align-items: center;
+  transform: scaleY(0);
+  transform-origin: top;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  // background-color: #eaf7ff;
+  background-color: #fff;
+  border: 0.063rem solid #6dd4ff;
+  box-shadow: 0px 0.125rem 0.625rem 0px #00000033;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.5s ease;
+  &--visible {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  &__content {
+    width: 90%;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #464646;
+  }
+}

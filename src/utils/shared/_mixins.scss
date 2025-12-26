@@ -1,0 +1,74 @@
+@mixin ellipsis($line: 2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+
+  @if $line == 1 {
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $line;
+    -webkit-box-orient: vertical;
+  }
+}
+
+@mixin reset-list() {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+@mixin reset-button() {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+@mixin reset-input() {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: text;
+}
+@mixin reset-link() {
+  text-decoration: none;
+  color: inherit;
+}
+/// A flexbox layout mixin.
+///
+/// @param {String} $direction - Direction of the flex container (e.g., `row`, `column`)
+/// @param {String} $justify - Justify content (e.g., `center`, `space-between`)
+/// @param {String} $align - Align items (e.g., `center`, `flex-start`)
+/// @param {Length|Number} $gap - Gap between flex items (e.g., `1rem`, `10px`)
+/// @param {String} $wrap - Flex wrap behavior (e.g., `nowrap`, `wrap`)
+
+@mixin flex(
+  $direction: row,
+  $justify: center,
+  $align: center,
+  $gap: 0,
+  $wrap: nowrap
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+  flex-wrap: $wrap;
+}
+
+@mixin flex(
+  $direction: row,
+  $justify: center,
+  $align: center,
+  $gap: 0,
+  $wrap: nowrap
+) {
+  display: flex;
+  flex-direction: $direction;
+  justify-content: $justify;
+  align-items: $align;
+  gap: $gap;
+  flex-wrap: $wrap;
+}

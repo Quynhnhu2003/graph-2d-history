@@ -1,0 +1,36 @@
+.graphContainer {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+
+  canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  &__search {
+    top: 60%;
+    left: 40%;
+    gap: 16px;
+    z-index: 10;
+    display: flex;
+    position: fixed;
+    pointer-events: none; // 🔑 để pan xuyên qua
+    flex-direction: column;
+    transform: translate(-100%, -100%);
+    &__title {
+      color: #000;
+      font-weight: 600;
+      text-align: center;
+    }
+    &__bar {
+      padding: 4px;
+      background: #fff;
+      border-radius: 4px;
+      font-size: 8px;
+      border: 0.5px solid rgba(0, 0, 0, 0.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+  }
+}

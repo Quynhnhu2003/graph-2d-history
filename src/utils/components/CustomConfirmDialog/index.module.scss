@@ -1,0 +1,82 @@
+.dialogContentWrapper {
+    top: 40% !important;
+    padding: 0 24px;
+
+    .dialogContent {
+        background: #fff;
+        border-radius: 12px !important;
+        padding: 24px 20px 20px;
+        text-align: center;
+
+        .dialogTitle {
+            color: #464646;
+            text-align: center;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+
+        .messageContent {
+            padding: 0;
+            
+
+            .message {
+                margin: 16px 0 24px;
+                color: #7D7D7D;
+                text-align: center;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: normal;
+        
+                .bold,
+                strong {
+                    color: #3d3d3d;
+                    font-weight: 500;
+                }
+            }
+        }
+    }
+
+    .buttonWrapper {
+        padding: 0;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+
+        button {
+            width: 100%;
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            outline: none !important;
+            border: none !important;
+            text-transform: none;
+            margin: 0;
+            height: 40px;
+            background: #EAF3FF;
+        }
+
+        .disagreeButton {           
+            color: #4564ed;     
+            flex: 50%;
+        }
+
+        .agreeButton {
+            color: #4564ed;
+            
+        }
+
+        .disagreeButton+.agreeButton {
+            width: 50%;
+            flex: 50%;
+            color: #fff;
+            background-color: #4564ed;
+        }
+    }
+}

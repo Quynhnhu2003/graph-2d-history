@@ -1,0 +1,40 @@
+// 🎨 Main Theme Colors (Encyclopedia History VN)
+$primary-paper: #f6f1e7; // Vàng giấy cổ – nền chính
+$primary-beige: #ece6d9; // Be xám – sidebar / box
+$primary-brown: #2b2723; // Nâu đen – chữ chính
+$primary-maroon: #7a2e22; // Nâu đỏ trầm – tiêu đề / triều đại
+
+// 🎯 Accent Colors
+$accent-red: #8b3a2b; // Đỏ son trầm – sự kiện quan trọng
+$accent-green: #4e6e6b; // Xanh cổ – link / navigation
+$accent-gold: #bfa76a; // Vàng đồng – timeline / icon
+$accent-muted: #6f857e; // Xanh xám – hover nhẹ
+
+// 🌈 Gradient Background (dùng rất hạn chế)
+$gradient-bg: linear-gradient(
+  135deg,
+  #f6f1e7,
+  #ece6d9
+); // Giấy cổ → be xám
+
+// 🔤 Text Colors
+$text-primary: #2b2723;   // Nội dung chính
+$text-secondary: #5a544c; // Meta, footnote
+$text-muted: #7a746c;    // Hint, caption
+$text-inverse: #f6f1e7;  // Chữ trên nền tối
+
+// 🔘 Button & Interaction
+$button-primary: #8b3a2b; // CTA chính
+$button-hover: #6f2419;
+$link-color: #4e6e6b;
+$link-hover: #8b3a2b;
+
+// 🌫 Shadow (rất nhẹ, học thuật)
+$shadow-soft: 0 4px 12px rgba(43, 39, 35, 0.08);
+
+// 🧱 Border / Divider
+$border-default: #d6cbb6;
+$border-strong: #bfa76a;
+
+// 🧊 Surface (thay cho glassmorphism)
+$surface-muted: rgba(236, 230, 217, 0.8); // Box nền nhẹ

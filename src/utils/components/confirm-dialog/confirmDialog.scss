@@ -1,0 +1,96 @@
+.dialog-content-wrapper-confirm {
+  border-radius: 12px !important;
+  background: #fff;
+  padding: 16px;
+  width: 90%;
+  margin: 0;
+
+  .dialog-title {
+    color: #3d3d3d;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 0;
+  }
+
+  .message-content {
+    padding: 0;
+  }
+
+  .message {
+    margin: 24px 0;
+    color: #888;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    font-family: inherit;
+
+    .bold,
+    strong {
+      color: #3d3d3d;
+      font-weight: 500;
+    }
+
+
+  }
+
+  .button-wrapper {
+    padding: 0;
+    gap: 8px;
+
+    .disagree-button {
+      width: 50%;
+      flex: 50%;
+      border-radius: 8px;
+      background: #EAF3FF;
+      padding: 8px;
+      color: #2569FF;
+      text-align: center;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      border: none !important;
+      outline: none !important;
+      margin: 0;
+      height: 40px;
+      text-transform: none;
+    }
+
+    .agree-button {
+      width: 100%;
+      flex: 100%;
+      border-radius: 8px;
+      background: #EAF3FF;
+      padding: 8px;
+      color: #2569FF;
+      text-align: center;
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: normal;
+      outline: none !important;
+      border: none !important;
+      text-transform: none;
+      height: 40px;
+      margin: 0;
+    }
+
+    &:has(.disagree-button) {
+      .agree-button {
+        width: 50%;
+        flex: 50%;
+        color: #fff;
+        background-color: #4564ed;
+      }
+    }
+  }
+
+  .click-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+}
