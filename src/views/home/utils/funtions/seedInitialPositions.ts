@@ -1,5 +1,5 @@
-import { DOMAIN_POS } from "../../../utils/constants";
-import type {Node} from '../../../utils/types/graph'
+import { DOMAIN_POS } from "../constants";
+import type {Node} from '../types/graph'
 
 export function seedInitialPositions(nodes: Node[]) {
     nodes.forEach((node) => {
