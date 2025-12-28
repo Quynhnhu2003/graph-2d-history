@@ -11,6 +11,7 @@ import { generateGraphData } from "../../../../data";
 import { Graph, Node } from "../../utils/types/graph";
 import { forceCollide, forceManyBody } from "d3-force";
 import { createGlobalDriftForce } from "../../utils/funtions/createGlobalDriftForce";
+import { MIN_ZOOM } from "../../utils/constants";
 
 export default function KnowledgeGraph() {
   const graphData: Graph = useMemo(() => generateGraphData(), []);
@@ -100,6 +101,13 @@ export default function KnowledgeGraph() {
     return () => clearInterval(timer);
   }, [graphData]);
 
+  useEffect(() => {
+    if (!fgRef.current) return;
+  
+    fgRef.current.zoom(0.12, 0);     // zoom gần trước
+    fgRef.current.zoom(MIN_ZOOM, 2000); // trôi ra trong 2s
+  }, []);
+
   const isLinkRelated = (link: any, nodeId: string | null) => {
     if (!nodeId) return false;
     const s = typeof link.source === "object" ? link.source.id : link.source;
@@ -130,17 +138,14 @@ export default function KnowledgeGraph() {
       </div>
       <ForceGraph2D
         ref={fgRef}
-        graphData={graphData}
-        autoPauseRedraw={false}
         enableNodeDrag
-        enableZoomInteraction
+        minZoom={MIN_ZOOM}
         enablePanInteraction
-        backgroundColor="linear-gradient(
-          135deg,
-          #f6f1e7,
-          #ece6d9
-        )"
         d3AlphaDecay={0.002}
+        graphData={graphData}
+        enableZoomInteraction
+        autoPauseRedraw={false}
+        backgroundColor="#f6f1e7"
         d3VelocityDecay={0.035}
         onNodeHover={(node) => {
           setHoverNodeId(node ? (node as Node).id : null);
@@ -166,7 +171,7 @@ export default function KnowledgeGraph() {
           if (node.x == null || node.y == null) return;
       
           const isActive = isNodeRelated(node.id, hoverNodeId);
-      
+    
           const fontSize =
             (node.level === 1 ? 24 : node.level === 2 ? 16 : 14) / scale;
       
