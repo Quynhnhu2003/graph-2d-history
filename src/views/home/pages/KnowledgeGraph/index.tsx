@@ -8,10 +8,10 @@ import styles from "./index.module.scss";
 import Search from "./components/Search";
 import ForceGraph2D from "react-force-graph-2d";
 import { generateGraphData } from "../../../../data";
-import { Graph, Node } from "../../utils/types/graph";
+import { Graph, GraphNode } from "../../utils/types/graph";
 import { forceCollide, forceManyBody } from "d3-force";
+import { DEFAULT_ZOOM, MIN_ZOOM } from "../../utils/constants";
 import { createGlobalDriftForce } from "../../utils/funtions/createGlobalDriftForce";
-import { MIN_ZOOM } from "../../utils/constants";
 
 export default function KnowledgeGraph() {
   const graphData: Graph = useMemo(() => generateGraphData(), []);
@@ -22,6 +22,7 @@ export default function KnowledgeGraph() {
 
   // ** Hooks
   const fgRef = useRef<any>(null);
+  const hoverNodeRef = useRef<string | null>(null);
 
   // ** useEffect
   useEffect(() => {
@@ -63,7 +64,10 @@ export default function KnowledgeGraph() {
     );
 
     // 🌊 FORCE TRÔI
-    fg.d3Force("drift", createGlobalDriftForce(0.005));
+    fg.d3Force("drift", createGlobalDriftForce(0.0008));
+
+    fgRef.current.zoom(0.12, 0); // zoom gần trước
+    fgRef.current.zoom(DEFAULT_ZOOM, 2000); // trôi ra trong 2s
 
     fg.d3ReheatSimulation();
   }, []);
@@ -101,99 +105,116 @@ export default function KnowledgeGraph() {
     return () => clearInterval(timer);
   }, [graphData]);
 
-  useEffect(() => {
-    if (!fgRef.current) return;
-  
-    fgRef.current.zoom(0.12, 0);     // zoom gần trước
-    fgRef.current.zoom(MIN_ZOOM, 2000); // trôi ra trong 2s
-  }, []);
-
-  const isLinkRelated = (link: any, nodeId: string | null) => {
-    if (!nodeId) return false;
-    const s = typeof link.source === "object" ? link.source.id : link.source;
-    const t = typeof link.target === "object" ? link.target.id : link.target;
-    return s === nodeId || t === nodeId;
-  };
-  
+  // ** Function
   const isNodeRelated = (nodeId: string, hoverId: string | null) => {
     if (!hoverId) return false;
-  
-    return (
-      nodeId === hoverId ||
-      graphData.links.some((l: any) => {
-        const s = typeof l.source === "object" ? l.source.id : l.source;
-        const t = typeof l.target === "object" ? l.target.id : l.target;
-        return (
-          (s === hoverId && t === nodeId) ||
-          (t === hoverId && s === nodeId)
-        );
-      })
-    );
-  };  
+
+    if (nodeId === hoverId) return true;
+
+    return graphData.links.some((l: any) => {
+      const s = typeof l.source === "object" ? l.source.id : l.source;
+      const t = typeof l.target === "object" ? l.target.id : l.target;
+      return (s === hoverId && t === nodeId) || (t === hoverId && s === nodeId);
+    });
+  };
+
+  const handleHoverNode = (node: GraphNode | null) => {
+    {
+      const fg = fgRef.current;
+      if (!fg) return;
+
+      // unpin node cũ
+      if (hoverNodeRef.current) {
+        const prev = graphData.nodes.find((n) => n.id === hoverNodeRef.current);
+        if (prev) {
+          prev.fx = undefined;
+          prev.fy = undefined;
+        }
+      }
+
+      if (node) {
+        node.fx = node.x;
+        node.fy = node.y;
+        hoverNodeRef.current = node.id;
+        setHoverNodeId(node.id);
+        document.body.style.cursor = "pointer";
+      } else {
+        hoverNodeRef.current = null;
+        setHoverNodeId(null);
+        document.body.style.cursor = "default";
+      }
+
+      fg.d3ReheatSimulation();
+    }
+  };
 
   return (
     <div className={styles.graphContainer}>
       <div className={styles.graphContainer__search}>
         <Search text={placeholder} />
       </div>
+
       <ForceGraph2D
         ref={fgRef}
         enableNodeDrag
         minZoom={MIN_ZOOM}
         enablePanInteraction
-        d3AlphaDecay={0.002}
         graphData={graphData}
         enableZoomInteraction
         autoPauseRedraw={false}
         backgroundColor="#f6f1e7"
-        d3VelocityDecay={0.035}
-        onNodeHover={(node) => {
-          setHoverNodeId(node ? (node as Node).id : null);
-          document.body.style.cursor = node ? "pointer" : "default";
-        }}
+        cooldownTicks={Infinity}
+        d3AlphaDecay={0.005}
+        d3VelocityDecay={0.35}
+        onZoom={() => fgRef.current?.d3ReheatSimulation()}
+        onNodeDrag={() => fgRef.current?.d3ReheatSimulation()}
+        onNodeHover={(node: GraphNode | null) => handleHoverNode(node)}
         linkCanvasObject={(link: any, ctx, scale) => {
-          const isActive = isLinkRelated(link, hoverNodeId);
-      
-          ctx.strokeStyle = isActive
-            ? "rgba(30, 30, 30, 0.9)"
-            : hoverNodeId
-            ? "rgba(200, 200, 200, 0.15)"
-            : "rgba(180, 180, 180, 0.4)";
-      
-          ctx.lineWidth = isActive ? 1 / scale : 0.5 / scale;
-      
+          const s = link.source;
+          const t = link.target;
+          if (!s || !t) return;
+        
+          ctx.strokeStyle = "rgba(120,110,90,0.12)";
+          ctx.lineWidth = 0.6 / scale;
+        
           ctx.beginPath();
-          ctx.moveTo(link.source.x, link.source.y);
-          ctx.lineTo(link.target.x, link.target.y);
+          ctx.moveTo(s.x, s.y);
+          ctx.lineTo(t.x, t.y);
           ctx.stroke();
-        }}
-        nodeCanvasObject={(node: Node, ctx, scale) => {
+        }}        
+        nodeCanvasObject={(node: GraphNode, ctx, scale) => {
           if (node.x == null || node.y == null) return;
-      
-          const isActive = isNodeRelated(node.id, hoverNodeId);
-    
-          const fontSize =
-            (node.level === 1 ? 24 : node.level === 2 ? 16 : 14) / scale;
-      
+        
+          const isHover = hoverNodeId === node.id;
+          const isDimmed = hoverNodeId && !isHover;
+        
+          const baseSize = node.level === 1 ? 24 : node.level === 2 ? 16 : 14;
+          const fontSize = (isHover ? baseSize * 1.2 : baseSize) / scale;
+        
           ctx.font = `${fontSize}px Inter, system-ui`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillStyle = isActive ? "#111" : "#999";
+        
+          ctx.globalAlpha = isDimmed ? 0.15 : 1;
+          ctx.fillStyle = isHover ? "#111" : "#999";
+        
           ctx.fillText(node.label, node.x, node.y);
-        }}
-      
+          ctx.globalAlpha = 1;
+        }}        
         // 🔥 CÁI QUAN TRỌNG NHẤT
-        nodePointerAreaPaint={(node: Node, color, ctx) => {
+        nodePointerAreaPaint={(node: GraphNode, color, ctx) => {
           if (node.x == null || node.y == null) return;
-      
-          const radius =
-            node.level === 1 ? 40 :
-            node.level === 2 ? 28 : 22;
-      
+
+          const padding = node.level === 1 ? 200 : node.level === 2 ? 160 : 140;
+
+          ctx.font = `16px Inter`;
+          const textWidth = ctx.measureText(node.label).width;
+
+          const w = textWidth + padding * 2;
+          const h = padding * 2;
+
           ctx.fillStyle = color;
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.fillRect(node.x - w / 2, node.y - h / 2, w, h);
         }}
       />
     </div>

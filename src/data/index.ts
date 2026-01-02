@@ -1,4 +1,4 @@
-import { Graph, Link, Node } from "../views/home/utils/types/graph";
+import { Graph, GraphLink, GraphNode } from "../views/home/utils/types/graph";
 
 // --------------------
 // Domains
@@ -79,7 +79,7 @@ const generateTopics = (
   domain: string,
   sub: string,
   count = 6
-): Node[] =>
+): GraphNode[] =>
   Array.from({ length: count }).map((_, i) => ({
     id: `${domain}:${sub}:Topic${i + 1}`,
     label: `${sub} ${i + 1}`,
@@ -91,8 +91,8 @@ const generateTopics = (
 // Graph generator
 // --------------------
 export const generateGraphData = (): Graph => {
-  const nodes: Node[] = [];
-  const links: Link[] = [];
+  const nodes: GraphNode[] = [];
+  const links: GraphLink[] = [];
 
   // ---- Domains
   DOMAINS.forEach((domain) => {
@@ -154,7 +154,7 @@ export const generateGraphData = (): Graph => {
 };
 
 export function generateFullGraph(minDomains = 6, subsPerDomain = 4): Graph {
-  const nodes: Node[] = [];
+  const nodes: GraphNode[] = [];
   const links: { source: string; target: string }[] = [];
 
   // Tạo domain
