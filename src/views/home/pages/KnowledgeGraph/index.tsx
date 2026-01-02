@@ -8,8 +8,8 @@ import styles from "./index.module.scss";
 import Search from "./components/Search";
 import ForceGraph2D from "react-force-graph-2d";
 import { generateGraphData } from "../../../../data";
-import { Graph, GraphNode } from "../../utils/types/graph";
 import { forceCollide, forceManyBody } from "d3-force";
+import { Graph, GraphNode } from "../../utils/types/graph";
 import { DEFAULT_ZOOM, MIN_ZOOM } from "../../utils/constants";
 import { createGlobalDriftForce } from "../../utils/funtions/createGlobalDriftForce";
 
@@ -87,6 +87,7 @@ export default function KnowledgeGraph() {
   }, []);
 
   useEffect(() => {
+    // Feature: RANDOM NODE INTO SEARCH
     if (!graphData?.nodes?.length) return;
 
     const nodesWithLabel = graphData.nodes.filter(
@@ -106,18 +107,6 @@ export default function KnowledgeGraph() {
   }, [graphData]);
 
   // ** Function
-  const isNodeRelated = (nodeId: string, hoverId: string | null) => {
-    if (!hoverId) return false;
-
-    if (nodeId === hoverId) return true;
-
-    return graphData.links.some((l: any) => {
-      const s = typeof l.source === "object" ? l.source.id : l.source;
-      const t = typeof l.target === "object" ? l.target.id : l.target;
-      return (s === hoverId && t === nodeId) || (t === hoverId && s === nodeId);
-    });
-  };
-
   const handleHoverNode = (node: GraphNode | null) => {
     {
       const fg = fgRef.current;
