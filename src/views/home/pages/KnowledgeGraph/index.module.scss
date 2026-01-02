@@ -17,6 +17,7 @@
     display: flex;
     position: fixed;
     pointer-events: none;
+    pointer-events: auto;
     flex-direction: column;
     transform: translate(-100%, -100%);
   }

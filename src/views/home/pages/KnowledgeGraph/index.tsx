@@ -1,4 +1,6 @@
 // ** React Import
+import { useNavigate } from "react-router-dom";
+import ForceGraph2D from "react-force-graph-2d";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 // ** Styles Import
@@ -6,12 +8,12 @@ import styles from "./index.module.scss";
 
 // ** Another Import
 import Search from "./components/Search";
-import ForceGraph2D from "react-force-graph-2d";
 import { generateGraphData } from "../../../../data";
 import { forceCollide, forceManyBody } from "d3-force";
 import { Graph, GraphNode } from "../../utils/types/graph";
 import { DEFAULT_ZOOM, MIN_ZOOM } from "../../utils/constants";
 import { createGlobalDriftForce } from "../../utils/funtions/createGlobalDriftForce";
+import { createAvoidSearchForce } from "../../utils/funtions/createAvoidSearchForce";
 
 export default function KnowledgeGraph() {
   const graphData: Graph = useMemo(() => generateGraphData(), []);
@@ -21,7 +23,9 @@ export default function KnowledgeGraph() {
   const [placeholder, setPlaceholder] = useState<string>("searching....");
 
   // ** Hooks
+  const navigate = useNavigate();
   const fgRef = useRef<any>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const hoverNodeRef = useRef<string | null>(null);
 
   // ** useEffect
@@ -41,8 +45,6 @@ export default function KnowledgeGraph() {
         .distanceMin(500)
         .distanceMax(18000)
     );
-
-    fg.d3Force("center", null);
 
     fg.d3Force("link")?.distance((link: any) => {
       const s = link.source;
@@ -65,6 +67,7 @@ export default function KnowledgeGraph() {
 
     // 🌊 FORCE TRÔI
     fg.d3Force("drift", createGlobalDriftForce(0.0008));
+    fg.d3Force( "avoid-search", createAvoidSearchForce(fgRef, searchRef.current!, 220));
 
     fgRef.current.zoom(0.12, 0); // zoom gần trước
     fgRef.current.zoom(DEFAULT_ZOOM, 2000); // trôi ra trong 2s
@@ -137,9 +140,26 @@ export default function KnowledgeGraph() {
     }
   };
 
+  const handleClickNode = (node: GraphNode) => {
+    if (!node) return;
+
+    navigate(`/learn/${encodeURIComponent(node.id)}`);
+  }
+
+  const wakeSimulation = () => {
+    if (!fgRef.current) return;
+  
+    fgRef.current.d3ReheatSimulation();
+  
+    clearTimeout((wakeSimulation as any)._t);
+    (wakeSimulation as any)._t = setTimeout(() => {
+      fgRef.current?.d3AlphaTarget(0);
+    }, 120);
+  };
+  
   return (
     <div className={styles.graphContainer}>
-      <div className={styles.graphContainer__search}>
+      <div ref={searchRef} className={styles.graphContainer__search}>
         <Search text={placeholder} />
       </div>
 
@@ -153,43 +173,44 @@ export default function KnowledgeGraph() {
         autoPauseRedraw={false}
         backgroundColor="#f6f1e7"
         cooldownTicks={Infinity}
-        d3AlphaDecay={0.005}
-        d3VelocityDecay={0.35}
-        onZoom={() => fgRef.current?.d3ReheatSimulation()}
+        d3AlphaDecay={0.006}
+        d3VelocityDecay={0.45}
+        onZoom={() => {wakeSimulation(),fgRef.current?.d3ReheatSimulation()}}
         onNodeDrag={() => fgRef.current?.d3ReheatSimulation()}
         onNodeHover={(node: GraphNode | null) => handleHoverNode(node)}
+        onNodeClick={(node: GraphNode) => handleClickNode(node)}
         linkCanvasObject={(link: any, ctx, scale) => {
           const s = link.source;
           const t = link.target;
           if (!s || !t) return;
-        
+
           ctx.strokeStyle = "rgba(120,110,90,0.12)";
           ctx.lineWidth = 0.6 / scale;
-        
+
           ctx.beginPath();
           ctx.moveTo(s.x, s.y);
           ctx.lineTo(t.x, t.y);
           ctx.stroke();
-        }}        
+        }}
         nodeCanvasObject={(node: GraphNode, ctx, scale) => {
           if (node.x == null || node.y == null) return;
-        
+
           const isHover = hoverNodeId === node.id;
           const isDimmed = hoverNodeId && !isHover;
-        
+
           const baseSize = node.level === 1 ? 24 : node.level === 2 ? 16 : 14;
           const fontSize = (isHover ? baseSize * 1.2 : baseSize) / scale;
-        
+
           ctx.font = `${fontSize}px Inter, system-ui`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-        
+
           ctx.globalAlpha = isDimmed ? 0.15 : 1;
           ctx.fillStyle = isHover ? "#111" : "#999";
-        
+
           ctx.fillText(node.label, node.x, node.y);
           ctx.globalAlpha = 1;
-        }}        
+        }}
         // 🔥 CÁI QUAN TRỌNG NHẤT
         nodePointerAreaPaint={(node: GraphNode, color, ctx) => {
           if (node.x == null || node.y == null) return;
