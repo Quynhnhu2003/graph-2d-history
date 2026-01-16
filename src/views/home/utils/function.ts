@@ -1,6 +1,6 @@
-import type { Node } from "./types/graph";
+import { GraphNode } from "./types/graph";
 
-export function seedInitialPositions(nodes: Node[]) {
+export function seedInitialPositions(nodes: GraphNode[]) {
     const jitter = (r: number) => (Math.random() - 0.5) * r;
   
     nodes.forEach((node) => {

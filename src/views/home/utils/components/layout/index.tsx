@@ -1,6 +1,3 @@
-// ** Styles Import
-import styles from "./index.module.scss";
-
 // ** Another Import
 import { Outlet } from "react-router-dom";
 
